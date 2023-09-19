@@ -73,7 +73,7 @@
                                         <li><a href="{{ url('banco/') }}">Banco</a></li>
                                         <li><a href="{{ url('persona/') }}">Persona</a></li>
                                         {{-- <li><a href="{{ url('rubro/') }}">Rubro</a></li> --}}
-                                        <li><a href="{{ url('egreso/') }}">Egresos</a></li>
+                                        <li><a href="{{ url('egreso/') }}">Ingresos y egresos</a></li>
 
                                         <li><a href="{{ url('recibo/') }}">Recibos</a></li>
                                     </ul>

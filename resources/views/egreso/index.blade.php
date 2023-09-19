@@ -1,6 +1,6 @@
 @extends ('welcome')
 @section('contenido')
-
+@include('sweetalert::alert', ['cdn' => 'https://cdn.jsdelivr.net/npm/sweetalert2@9'])
 <div class="x_panel">
     <div class="clearfix"></div>
 
@@ -8,7 +8,7 @@
 
     <div class="x_title">
         <div class="col-md-6 col-sm-6 col-xs-12">
-            <h2>Listado de Egresos</h2>
+            <h2>Listado de ingresos/egresos</h2>
         </div>
         <div class="col-md-6 col-sm-6 col-xs-12" align="right">
             {{--  --}}
@@ -28,40 +28,39 @@
             <table id="datatable" class="table table-striped table-bordered">
                 <thead>
                     <tr>
-                        <th>Id</th>
                         <th>Numero</th>
                         <th>Fecha</th>
                         <th>Descripcion</th>
                         <th>Tipo</th>
                         <th>Cantidad</th>
                         <th>Rubro</th>
-                        <th>Usuario</th>
-                        <th>FechaIngreso</th>
+                        {{--  <th>Usuario</th>
+                        <th>FechaIngreso</th>--}}
                         <th>Opciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($egresos as $obj)
                     <tr>
-                        <td align="center">{{ $obj->Id }}</td>
-                        <td>{{ $obj->Numero }}</td>
-                        <td>{{ $obj->Fecha }}</td>
+                        <td align="center">{{ $obj->Numero }}</td>
+                        <td>{{ date('d/m/Y', strtotime($obj->Fecha)) }}</td>
                         <td>{{ $obj->Descripcion }}</td>
                         {{-- AQUI SE AGREGA EL NOMBRE DE LA FUNCION DE LA RELACION QUE ESTA EN EL MODELO SEGUIDO DEL NOMBRE EXACTO DEL CAMPO --}}
-                        <td>{{ $obj->ObjEgresoTipo->Nombre }}</td>
+                        <td>{{ $obj->Tipo == 1 ? 'INGRESO':'EGRESO' }}</td>
                         <td>{{ $obj->Cantidad }}</td>
                         {{-- AQUI SE AGREGA EL NOMBRE DE LA FUNCION DE LA RELACION QUE ESTA EN EL MODELO SEGUIDO DEL NOMBRE EXACTO DEL CAMPO --}}
-                        <td>{{ $obj->ObjEgresoRubro->Nombre }}</td>
-                        {{-- AQUI SE AGREGA EL NOMBRE DE LA FUNCION DE LA RELACION QUE ESTA EN EL MODELO SEGUIDO DEL NOMBRE EXACTO DEL CAMPO --}}
-                        <td>{{ $obj->ObjEgresoUsuario->Usuario}}</td>
-                        <td>{{ $obj->FechaIngreso}}</td>
-                                                
+                        <td>{{ $obj->rubro->Nombre }}</td>
+                        {{-- AQUI SE AGREGA EL NOMBRE DE LA FUNCION DE LA RELACION QUE ESTA EN EL MODELO SEGUIDO DEL NOMBRE EXACTO DEL CAMPO
+                        <td>{{ $obj->usuario->Usuario}}</td>
+                        <td>{{ $obj->FechaIngreso}}</td>--}}
+
                         <td align="center">
-                            {{--  --}}
+
                             <a href="{{ url('egreso') }}/{{ $obj->Id }}/edit" class="on-default edit-row">
-                                <i class="fa fa-pencil fa-lg"></i></a>
-                                &nbsp;&nbsp;<a href="" data-target="#modal-delete-{{ $obj->Id }}"
-                                    data-toggle="modal"><i class="fa fa-trash fa-lg"></i></a>
+                               <button class="btn btn-success"> <i class="fa fa-pencil fa-lg"></i></button>
+                            </a>
+                             {{--   &nbsp;&nbsp;<a href="" data-target="#modal-delete-{{ $obj->Id }}"
+                                    data-toggle="modal"><i class="fa fa-trash fa-lg"></i></a>--}}
                         </td>
                     </tr>
                     @include('egreso.modal')
@@ -71,9 +70,9 @@
 
             <div class="clearfix"></div>
             @endif
-        </div> 
+        </div>
 
-        
+
 
     </div>
 </div>

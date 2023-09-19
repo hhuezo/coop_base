@@ -7,6 +7,7 @@ use App\Models\Rubro;
 use App\Models\Tipo;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class EgresoController extends Controller
 {
@@ -16,8 +17,6 @@ class EgresoController extends Controller
         //
         //la variable jala el modelo , nombre exacto
         $egresos = Egreso::get();
-        //dd($egresos); //(verificar los datos de la variable)
-        //en compact va el nombre de la variable $banco sin el signo dollar
         return view('egreso.index', compact('egresos'));
     }
 
@@ -52,28 +51,27 @@ class EgresoController extends Controller
             'FechaIngreso.required' => 'La Fecha de Ingreso es un valor requerido',
         ];
         $request->validate([
-            'Numero' => 'required',
             'Fecha' => 'required',
             'Descripcion' => 'required',
-            'Tipo' => 'required',
             'Cantidad' => 'required',
             'Rubro' => 'required',
-            'Usuario' => 'required',
-            'FechaIngreso' => 'required',
         ], $messages);
-        //creamos un nuevo registro en la tabla banco, llamando el modelo banco.
+
+        $max = Egreso::max('Numero');
+
         $egresos = new Egreso();
-        //asignando el valor del formulario al campo de la tabla
-        $egresos->Numero = $request->Numero;
+        $egresos->Numero = $max +1;
         $egresos->Fecha = $request->Fecha;
         $egresos->Descripcion = $request->Descripcion;
         $egresos->Tipo = $request->Tipo;
         $egresos->Cantidad = $request->Cantidad;
         $egresos->Rubro = $request->Rubro;
-        $egresos->Usuario = $request->Usuario;
-        $egresos->FechaIngreso = $request->FechaIngreso;
+        $egresos->Usuario = auth()->user()->id;
+        $time = Carbon::now('America/El_Salvador');
+        $egresos->FechaIngreso =  $time->toDateTimeString();
         //guardamos
         $egresos->save();
+        alert()->success('El registro ha sido creado correctamente');
         return redirect('egreso');
     }
 
@@ -108,11 +106,10 @@ class EgresoController extends Controller
         $egresos->Tipo = $request->Tipo;
         $egresos->Cantidad = $request->Cantidad;
         $egresos->Rubro = $request->Rubro;
-        $egresos->Usuario = $request->Usuario;
-        $egresos->FechaIngreso = $request->FechaIngreso;
 
         //guardamos
         $egresos->update();
+        alert()->success('El registro ha sido modificado correctamente');
         return redirect('egreso');
     }
 

@@ -60,26 +60,15 @@
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     {{-- ANALIZAR LENTAMENTE ESTE CODIGO DE SELECCION --}}
                                     <select name="Tipo" class="form-control">
-                                        @foreach ($tipo as $obj)
-                                            @if ($obj->Id == $egresos->Tipo)
-                                                <Option value="{{ $obj->Id }}" selected>
-                                                    {{ $obj->Nombre }}
-
-                                                </Option>
-                                            @else
-                                                <Option value="{{ $obj->Id }}">
-                                                    {{ $obj->Nombre }}
-
-                                                </Option>
-                                            @endif
-                                        @endforeach
+                                        <Option value="1" {{$egresos->Tipo == 1 ? 'selected':''}}>INGRESO</Option>
+                                        <Option value="2" {{$egresos->Tipo == 2 ? 'selected':''}}>EGRESO</Option>
 
                                     </select>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-12 col-xs-12">Monto</label>
+                                <label class="control-label col-md-3 col-sm-12 col-xs-12">Cantidad</label>
                                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                     <input type="number" name="Cantidad" class="form-control" autofocus="true"
                                         value="{{ $egresos->Cantidad }}">
@@ -108,45 +97,12 @@
                                 </div>
                             </div>
 
-                            {{-- ESTA ES EL CODIGO PARA QUE APAREZCA EL DATO RELACIONADO QUE LE CORRESPONDE AL ID QUE SE VA A MODIFICAR  --}}
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Usuario</label>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    {{-- ANALIZAR LENTAMENTE ESTE CODIGO DE SELECCION --}}
-                                    <select name="Usuario" class="form-control">
-                                        @foreach ($usuarios as $obj)
-                                            @if ($obj->Id == $egresos->Usuario)
-                                                <Option value="{{ $obj->Id }}" selected>
-                                                    {{ $obj->Usuario }}
-                                                </Option>
-                                            @else
-                                                <Option value="{{ $obj->Id }}">
-                                                    {{ $obj->Usuario }}
-                                                </Option>
-                                            @endif
-                                        @endforeach
-
-                                    </select>
-                                </div>
-                            </div>
 
 
-                            <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-12 col-xs-12">Fecha de Ingreso</label>
-
-                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                    <input type="datetime-local" name="FechaIngreso" class="form-control" autofocus="true"
-                                        value="{{ $egresos->FechaIngreso }}">
-                                </div>
-                                
-
-
-
-                                <div class="form-group" align="center">
-                                    <button class="btn btn-success" type="submit">Modificar</button>
-                                    <a href="{{ url('egreso') }}"><button class="btn btn-primary"
-                                            type="button">Cancelar</button></a>
-                                </div>
+                            <div class="form-group" align="center">
+                                <button class="btn btn-success" type="submit">Modificar</button>
+                                <a href="{{ url('egreso') }}"><button class="btn btn-primary"
+                                        type="button">Cancelar</button></a>
                             </div>
                 </form>
             </div>
