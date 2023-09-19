@@ -1,6 +1,6 @@
 @extends ('welcome')
 @section('contenido')
-
+@include('sweetalert::alert', ['cdn' => 'https://cdn.jsdelivr.net/npm/sweetalert2@9'])
 <div class="x_panel">
     <div class="clearfix"></div>
 
@@ -36,9 +36,7 @@
                         <th>Interes</th>
                         <th>Cantidad Actual</th>
                         <th>Capital</th>
-                        <th>Total</th>
-                        <th>Usuario</th>
-                        <th>FechaInicio</th>
+                        <th>Cantidad restante</th>
                         <th>Opciones</th>
                     </tr>
                 </thead>
@@ -48,16 +46,14 @@
                         <td align="center">{{ $obj->Id }}</td>
                         <td>{{ date('d/m/Y', strtotime($obj->Fecha)) }}</td>
                         {{-- AQUI SE AGREGA EL NOMBRE DE LA FUNCION DE LA RELACION QUE ESTA EN EL MODELO SEGUIDO DEL NOMBRE EXACTO DEL CAMPO --}}
-                        <td>{{ $obj->ObjReciboSolicitud->Numero }}</td>
+                        <td>{{ $obj->solicitud->Numero }}</td>
                         <td>{{ $obj->Numero }}</td>
                         <td>{{ $obj->Pago }}</td>
                         <td>{{ $obj->Interes}}</td>
                         <td>{{ $obj->CantidadActual}}</td>
                         <td>$ {{ $obj->Capital}}</td>
                         <td>$ {{ $obj->Total}}</td>
-                        <td>{{ $obj->Usuario}}</td>
-                        <td>{{ date('d/m/Y', strtotime($obj->FechaInicio)) }}</td>
-                                                
+
                         <td align="center">
                             {{--  --}}
                             <a href="{{ url('recibo') }}/{{ $obj->Id }}/edit" class="on-default edit-row">
@@ -73,9 +69,9 @@
 
             <div class="clearfix"></div>
             @endif
-        </div> 
+        </div>
 
-        
+
 
     </div>
 </div>

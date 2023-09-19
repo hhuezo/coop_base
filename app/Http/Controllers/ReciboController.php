@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ReciboController extends Controller
 {
-   
+
     public function index()
     {
         //
@@ -16,16 +16,16 @@ class ReciboController extends Controller
         return view('recibo.index', compact('recibos'));
     }
 
-   
+
     public function create()
     {
         $solicitudes = Solicitud::get();
         // SE AGREGA LA VISTA DE RUBRO.CREATE JUNTO A LOS DATOS DE LA TABLA RELACIONADA TIPO.
         return view('recibo.create', compact('solicitudes'));
     }
-    
 
-    
+
+
     public function store(Request $request)
     {
         //
@@ -71,13 +71,13 @@ class ReciboController extends Controller
         return redirect('recibo');
     }
 
-   
+
     public function show($id)
     {
         //
     }
 
-    
+
     public function edit($id)
     {
         //
@@ -86,7 +86,7 @@ class ReciboController extends Controller
         return view('recibo.edit', compact('solicitudes','recibos'));
     }
 
-    
+
     public function update(Request $request, $id)
     {
         //
@@ -106,10 +106,11 @@ class ReciboController extends Controller
 
         //guardamos
         $recibos->update();
+        alert()->success('El registro ha sido modificado correctamente');
         return redirect('recibo');
     }
 
-   
+
     public function destroy($id)
     {
         //

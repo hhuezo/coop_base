@@ -63,6 +63,7 @@
                                     <ul class="nav child_menu">
                                         <li><a href="{{ url('control/solicitud') }}">Solicitud</a></li>
                                         <li><a href="{{ url('control/aportacion') }}">Aportaciones</a></li>
+                                        <li><a href="{{ url('egreso/') }}">Ingresos y egresos</a></li>
                                     </ul>
                                 </li>
                                 <li><a><i class="fa fa-desktop"></i> Catálogos<span
@@ -73,7 +74,7 @@
                                         <li><a href="{{ url('banco/') }}">Banco</a></li>
                                         <li><a href="{{ url('persona/') }}">Persona</a></li>
                                         {{-- <li><a href="{{ url('rubro/') }}">Rubro</a></li> --}}
-                                        <li><a href="{{ url('egreso/') }}">Ingresos y egresos</a></li>
+
 
                                         <li><a href="{{ url('recibo/') }}">Recibos</a></li>
                                     </ul>
