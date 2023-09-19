@@ -8,13 +8,13 @@ use Illuminate\Http\Request;
 
 class PersonaController extends Controller
 {
-   
+
     public function index()
     {
-        
-         $persona = Persona::get();
-         
-         return view('persona.index',compact('persona'));
+
+        $persona = Persona::get();
+
+        return view('persona.index', compact('persona'));
     }
 
     public function get_banco($id)
@@ -28,90 +28,102 @@ class PersonaController extends Controller
         $persona = Persona::findOrFail($id);
         return $persona->Dui;
     }
-   
+
     public function create()
     {
         //
         $bancos = Banco::get();
         return view('persona.create', compact('bancos'));
-
     }
 
-    
+
     public function store(Request $request)
     {
-        //
-         //
-        //
-        // dd(''); para probar si llegas a la ruta
-        $messages = ['Nombre.required' => 'El nombre de la Persona es un valor requerido',
-        'Dui.required' => 'El nombre del Dui es un valor requerido'
-    ];
-        $request->validate(['Nombre' => 'required',
-        'Dui' => 'required'
-    
-    
+
+        $messages = [
+            'Nombre.required' => 'El nombre de la Persona es un valor requerido',
+            'Dui.required' => 'El nombre del Dui es un valor requerido',
+            'Cuenta.required' => 'La cuenta es un valor requerido'
+        ];
+        $request->validate([
+            'Nombre' => 'required',
+            'Dui' => 'required',
+            //'Cuenta' => 'required'
+
         ], $messages);
-        //creamos un nuevo registro en la tabla banco, llamando el modelo banco.
+
         $persona = new Persona();
+        $persona->Nombre = $request->Nombre;
+        $persona->Dui = $request->Dui;
+        $persona->Nit = $request->Nit;
+        $persona->Telefono = $request->Telefono;
+        $persona->Correo = $request->Correo;
+        if($request->Socio == null)
+        {
+            $persona->Socio = 0;
+        }else{
+            $persona->Socio = 1;
+        }
+        $persona->Banco = $request->Banco;
+        $persona->NumeroCuenta = $request->NumeroCuenta;
+        $persona->Activo = 1;
+
+
+        //guardamos
+        $persona->save();
+        alert()->success('El registro ha sido guardado correctamente');
+        return redirect('persona');
+    }
+
+
+    public function show($id)
+    {
+        //
+    }
+
+
+    public function edit($id)
+    {
+        //
+        //
+        $persona = Persona::findOrFail($id);
+        $bancos = Banco::get();
+        //dd($estado);
+        return view('persona.edit', compact('persona', 'bancos'));
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        //
+        $persona = Persona::findOrFail($id);
         //asignando el valor del formulario al campo de la tabla
         $persona->Nombre = $request->Nombre;
         $persona->Dui = $request->Dui;
         $persona->Nit = $request->Nit;
         $persona->Telefono = $request->Telefono;
         $persona->Correo = $request->Correo;
-        $persona->Socio = $request->Socio;
+        if($request->Socio == null)
+        {
+            $persona->Socio = 0;
+        }else{
+            $persona->Socio = 1;
+        }
         $persona->Banco = $request->Banco;
         $persona->NumeroCuenta = $request->NumeroCuenta;
-        $persona->Activo = $request->Activo;
-
-
+        if($request->Activo == null)
+        {
+            $persona->Activo = 0;
+        }else{
+            $persona->Activo = 1;
+        }
         //guardamos
-        $persona->save();
+        $persona->update();
+        alert()->success('El registro ha sido modificado correctamente');
         return redirect('persona');
-
     }
 
-    
-    public function show($id)
-    {
-        //
-    }
 
-    
-    public function edit($id)
-    {
-        //
-           //
-           $persona = Persona::findOrFail($id);
-           $bancos = Banco::get();
-           //dd($estado);
-           return view('persona.edit',compact('persona','bancos'));
-    }
-
-    
-    public function update(Request $request, $id)
-    {
-        //
-        $persona = Persona::findOrFail($id);
-         //asignando el valor del formulario al campo de la tabla
-         $persona->Nombre = $request->Nombre;
-         $persona->Dui = $request->Dui;
-         $persona->Nit = $request->Nit;
-         $persona->Telefono = $request->Telefono;
-         $persona->Correo = $request->Correo;
-         $persona->Socio = $request->Socio;
-         $persona->Banco = $request->Banco;
-         $persona->NumeroCuenta = $request->NumeroCuenta;
-         $persona->Activo = $request->Activo;
- 
- 
-         //guardamos
-         $persona->update();
-         return redirect('persona');
-    }
-
-    
     public function destroy($id)
     {
         //

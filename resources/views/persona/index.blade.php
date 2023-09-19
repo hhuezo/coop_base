@@ -1,6 +1,6 @@
 @extends ('welcome')
 @section('contenido')
-
+@include('sweetalert::alert', ['cdn' => 'https://cdn.jsdelivr.net/npm/sweetalert2@9'])
     <div class="x_panel">
         <div class="clearfix"></div>
 
@@ -29,7 +29,6 @@
                     <table id="datatable" class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th>Id</th>
                                 <th>Nombre</th>
                                 <th>Dui</th>
                                 <th>Nit</th>
@@ -46,7 +45,6 @@
                         <tbody>
                             @foreach ($persona as $obj)
                                 <tr>
-                                    <td align="center">{{ $obj->Id }}</td>
                                     <td>{{ $obj->Nombre }}</td>
 
                                     <td>{{ $obj->Dui }}</td>
@@ -62,15 +60,15 @@
                                     @endif
 
                                     <td>{{ $obj->Cuenta }}</td>
-                                    <td>{{ $obj->Activo }}</td>
+                                    <td align="center"><input type="checkbox" {{ $obj->Activo == 1? 'checked':'' }}></td>
 
                                     <td align="center">
-                                        {{--  --}}
                                         <a href="{{ url('persona') }}/{{ $obj->Id }}/edit"
                                             class="on-default edit-row">
-                                            <i class="fa fa-pencil fa-lg"></i></a>
-                                        &nbsp;&nbsp;<a href="" data-target="#modal-delete-{{ $obj->Id }}"
-                                            data-toggle="modal"><i class="fa fa-trash fa-lg"></i></a>
+                                            <button class="btn btn-success">
+                                           <i class="fa fa-pencil fa-lg"></i></button></a>
+                                       {{--  &nbsp;&nbsp;<a href="" data-target="#modal-delete-{{ $obj->Id }}"
+                                            data-toggle="modal"><i class="fa fa-trash fa-lg"></i></a>  --}}
                                     </td>
                                 </tr>
                                 @include('persona.modal')

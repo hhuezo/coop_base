@@ -6,7 +6,7 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-horizontal form-label-left">
 
                 <div class="x_title">
-                    <h2>Modificar el nombre del Persona <small></small></h2>
+                    <h2>Modificar persona <small></small></h2>
                     <ul class="nav navbar-right panel_toolbox">
 
                     </ul>
@@ -73,8 +73,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-12 col-xs-12">Socio</label>
                                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                    <input type="number" name="Socio" class="form-control" autofocus="true"
-                                        value="{{ $persona->Socio }}">
+                                    <input type="checkbox" name="Socio" {{$persona->Socio == 1 ? 'checked':''}}>
                                 </div>
                             </div>
 
@@ -113,8 +112,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-12 col-xs-12">Activo</label>
                                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                    <input type="number" name="Activo" class="form-control" autofocus="true"
-                                        value="{{ $persona->Activo }}">
+                                    <input type="checkbox" name="Activo" {{$persona->Activo == 1 ? 'checked':''}}>
                                 </div>
                             </div>
 
