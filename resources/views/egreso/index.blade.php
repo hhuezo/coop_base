@@ -59,8 +59,8 @@
                             <a href="{{ url('egreso') }}/{{ $obj->Id }}/edit" class="on-default edit-row">
                                <button class="btn btn-success"> <i class="fa fa-pencil fa-lg"></i></button>
                             </a>
-                             {{--   &nbsp;&nbsp;<a href="" data-target="#modal-delete-{{ $obj->Id }}"
-                                    data-toggle="modal"><i class="fa fa-trash fa-lg"></i></a>--}}
+                            &nbsp;&nbsp;<a href="" data-target="#modal-delete-{{ $obj->Id }}"
+                                    data-toggle="modal"><i class="fa fa-trash fa-lg"></i></a>
                         </td>
                     </tr>
                     @include('egreso.modal')

@@ -121,7 +121,7 @@ class EgresoController extends Controller
         //dd($id);
         $egresos = Egreso::findOrFail($id);
         $egresos->delete();
-        //te regresa a la pagina donde estas, no necesariamente index.
+        alert()->success('El registro ha sido eliminado correctamente');
         return back();
     }
 }
