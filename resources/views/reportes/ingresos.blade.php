@@ -14,7 +14,7 @@
                 <div class="x_content">
                     <br />
                     <form action="{{ url('reportes/ingresos') }}" data-parsley-validate
-                        class="form-horizontal form-label-left" method="POST">
+                        class="form-horizontal form-label-left" target="_blank" method="POST">
                         @csrf
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Fecha Inicio</label>
