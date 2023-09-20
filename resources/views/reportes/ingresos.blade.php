@@ -19,7 +19,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Fecha Inicio</label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="date" name="FechaInicio" value="{{ date('Y-m-d') }}" required
+                                <input type="date" name="FechaInicio" value="{{ date('Y-m-') }}01" required
                                     class="form-control">
                             </div>
                         </div>

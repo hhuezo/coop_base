@@ -29,7 +29,8 @@ class ReportesController extends Controller
             ->where('Fecha', '<', $FechaInicio)
             ->first();
 
-        $total_egresos = $result->totalMonto + $result->totalMonto;
+        $total_egresos = $result->totalMonto + $result->totalCantidad;
+
 
         $result = DB::table('aportaciones')
             ->select(
@@ -39,7 +40,8 @@ class ReportesController extends Controller
             )
             ->where('Fecha', '<', $FechaInicio)
             ->first();
-        $total_ingresos = $result->totalCantidadEgreso + $result->totalPago;
+        $total_ingresos = $result->totalCantidad + $result->totalCantidadEgreso + $result->totalPago;
+        //dd($result->totalCantidad , $result->totalCantidadEgreso , $result->totalPago);
         $monto_inicial = $total_ingresos - $total_egresos;
 
         $temp = new TempIngresos();

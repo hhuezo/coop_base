@@ -8,18 +8,18 @@
         .Estilo3 {
             font-family: Arial, Helvetica, sans-serif;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 10px;
         }
 
         .Estilo5 {
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 12px;
+            font-size: 10px;
         }
 
         .Estilo7 {
             font-family: Arial, Helvetica, sans-serif;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 12px;
         }
         -->
     </style>
@@ -31,7 +31,7 @@
     <table width="70%" border="0" cellspacing="0" align="center">
         <tr>
             <td width="18%" rowspan="2">
-                <div align="center"></div> <img src="{{ public_path() }}/img/logo.png" width="169" height="124">
+                <div align="center"></div> <img src="{{ asset('/img') }}/logo.png" width="169" height="124">
             </td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
@@ -170,6 +170,12 @@
 
 
     </table>
+    <script type="text/javascript">
+            window.onload = function () {
+                window.print();
+                //window.close();
+            }
+        </script>
 </body>
 
 </html>
