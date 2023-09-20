@@ -9,6 +9,7 @@ use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\ReciboController;
+use App\Http\Controllers\ReportesController;
 use App\Http\Controllers\RubroController;
 use App\Http\Controllers\SolicitudCatalogoController;
 use App\Http\Controllers\TipoController;
@@ -62,3 +63,6 @@ Route::resource('control/aportacion', AportacionController::class);
 
 Route::get('persona/get_banco/{id}', [PersonaController::class, 'get_banco']);
 Route::get('persona/get_dui/{id}', [PersonaController::class, 'get_dui']);
+
+Route::get('reportes/ingresos', [ReportesController::class, 'ingresos']);
+Route::post('reportes/ingresos', [ReportesController::class, 'ingresos_generar']);
