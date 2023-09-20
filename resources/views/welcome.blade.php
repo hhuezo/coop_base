@@ -53,19 +53,28 @@
                         <div class="menu_section">
                             <h3>Acoesi</h3>
                             <ul class="nav side-menu">
-                                <li><a><i class="fa fa-home"></i> Seguridad <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="{{ url('usuario/') }}">Usuario</a></li>
-                                    </ul>
-                                </li>
-                                <li><a><i class="fa fa-edit"></i> Solicitudes <span
-                                            class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="{{ url('control/solicitud') }}">Solicitud</a></li>
-                                        <li><a href="{{ url('control/aportacion') }}">Aportaciones</a></li>
-                                        <li><a href="{{ url('egreso/') }}">Ingresos y egresos</a></li>
-                                    </ul>
-                                </li>
+                                @if (auth()->user()->rol_id == 1)
+                                    <li><a><i class="fa fa-home"></i> Seguridad <span
+                                                class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="{{ url('usuario/') }}">Usuario</a></li>
+                                        </ul>
+                                    </li>
+                                @endif
+                                @if (auth()->user()->rol_id == 1 || auth()->user()->rol_id == 2)
+                                    <li><a><i class="fa fa-edit"></i> Solicitudes <span
+                                                class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="{{ url('control/solicitud') }}">Solicitud</a></li>
+                                            <li><a href="{{ url('control/aportacion') }}">Aportaciones</a></li>
+                                            @if (auth()->user()->rol_id == 1)
+                                                <li><a href="{{ url('egreso/') }}">Ingresos y egresos</a></li>
+                                            @endif
+                                        </ul>
+                                    </li>
+                                @endif
+
+                                @if (auth()->user()->rol_id == 1)
                                 <li><a><i class="fa fa-desktop"></i> Catálogos<span
                                             class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
@@ -79,7 +88,7 @@
                                         <li><a href="{{ url('recibo/') }}">Recibos</a></li>
                                     </ul>
                                 </li>
-
+                                @endif
                                 <li><a><i class="fa fa-file-pdf-o"></i> Reportes<span
                                             class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">

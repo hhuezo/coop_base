@@ -25,9 +25,11 @@
                         <thead>
                             <tr>
                                 <th>
+                                    @if (auth()->user()->rol_id == 1)
                                     <center>
                                         <i class="fa fa-plus"></i>
                                     </center>
+                                    @endif
                                 </th>
                                 <th>
                                     <center>Socio</center>
