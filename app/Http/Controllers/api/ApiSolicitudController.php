@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Persona;
 use App\Models\Solicitud;
 use App\Models\Tipo;
+use Exception;
 use Illuminate\Http\Request;
 
 class ApiSolicitudController extends Controller
@@ -83,12 +84,28 @@ class ApiSolicitudController extends Controller
         return $response;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
+    public function getFiador($id)
+    {
+        try{
+            $solicitante = Persona::findOrFail($id);
+
+            if ($solicitante) {
+
+                if ($solicitante->Socio == 1) {
+                    $response = Persona::select('Id', 'Nombre')->where('Id', '=', 1)->get();
+                } else {
+                    $response = Persona::select('Id', 'Nombre')->where('Activo', '=', 1)->where('Socio', '=', 1)->get();
+                }
+            }
+        }
+        catch(Exception $e)
+        {
+            $response = Persona::select('Id', 'Nombre')->where('Id', '=', 1)->get();
+        }
+
+        return $response;
+    }
     public function store(Request $request)
     {
         //
@@ -102,7 +119,6 @@ class ApiSolicitudController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
