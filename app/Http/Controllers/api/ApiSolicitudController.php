@@ -74,8 +74,8 @@ class ApiSolicitudController extends Controller
      */
     public function create()
     {
-        $solicitantes = Persona::where('Activo', '=', 1)->get();
-        $fiadores = Persona::where('Activo', '=', 1)->where('Socio', '=', 1)->get();
+        $solicitantes = Persona::where('Activo', '=', 1)->take(2)->get();
+        $fiadores = Persona::where('Activo', '=', 1)->where('Socio', '=', 1)->take(2)->get();
         $tipos = Tipo::get();
 
         $response = ['solicitantes' => $solicitantes, 'fiadores' => $fiadores, 'tipos' => $tipos];
