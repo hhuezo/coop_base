@@ -2,6 +2,9 @@
 /public/build
 /public/hot
 /public/storage
+/public/aportacion.pdf
+/public/recibo.pdf
+/public/solicitud.pdf
 /storage/*.key
 /vendor
 .env

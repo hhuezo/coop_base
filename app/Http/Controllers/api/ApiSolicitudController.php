@@ -60,7 +60,6 @@ class ApiSolicitudController extends Controller
                     'estado.Nombre as estado',
                     'estado.Id as id_estado'
                 )
-                ->take(2)
                 ->orderBy('solicitud.Numero', 'desc')
                 ->get();
         }
