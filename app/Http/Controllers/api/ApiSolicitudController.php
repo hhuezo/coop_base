@@ -112,7 +112,9 @@ class ApiSolicitudController extends Controller
 
     public function store(Request $request)
     {
-        return "hola";
+        $mensaje = "hola";
+
+        return response()->json(['mensaje' => $mensaje]);
         /*$messages = [
 
             'Fecha.required' => 'Fecha es un valor requerido',
