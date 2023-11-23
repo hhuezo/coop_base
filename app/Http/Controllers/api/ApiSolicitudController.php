@@ -114,7 +114,10 @@ class ApiSolicitudController extends Controller
     {
         $mensaje = "hola";
 
-        return response()->json(['mensaje' => $mensaje]);
+        $max_numero = Solicitud::max('Numero');
+        $max_credito = Solicitud::max('NumeroCredito');
+
+        return response()->json(['max_numero' => $max_numero, 'max_credito' => $max_credito ]);
         /*$messages = [
 
             'Fecha.required' => 'Fecha es un valor requerido',
@@ -133,7 +136,7 @@ class ApiSolicitudController extends Controller
             'Tasa' => 'required',
             'Meses' => 'required',
 
-        ], $messages);
+        ], $messages);*/
 
         $max_numero = Solicitud::max('Numero');
         $max_credito = Solicitud::max('NumeroCredito');
@@ -231,12 +234,6 @@ class ApiSolicitudController extends Controller
         }
 
 
-
-
-
-
-        alert()->success('El registro ha sido creado correctamente');
-        return back();*/
     }
 
     /**
