@@ -117,7 +117,7 @@ class ApiSolicitudController extends Controller
         $max_numero = Solicitud::max('Numero');
         $max_credito = Solicitud::max('NumeroCredito');
 
-        return response()->json(['max_numero' => $max_numero, 'max_credito' => $max_credito ]);
+        return response()->json(['max_numero' => $max_numero, 'max_credito' => $request->Fecha ]);
         /*$messages = [
 
             'Fecha.required' => 'Fecha es un valor requerido',
@@ -150,7 +150,7 @@ class ApiSolicitudController extends Controller
         $solicitud->Cantidad = $request->Cantidad;
         $solicitud->Monto = $request->Cantidad;
         $solicitud->Tipo = 1;
-        $solicitud->Tasa = $request->Tasa;
+        $solicitud->Tasa = 4;
         $solicitud->Meses = $request->Meses;
         $solicitud->NumeroCredito = $max_credito + 1;
         if ($request->Fiador != "") {
@@ -160,7 +160,7 @@ class ApiSolicitudController extends Controller
         }
         $solicitud->Estado = 2;
         //FUNCION PROPIA DE LARAVEL QUE TRAE TODOS LOS DATOS DEL USUARIO LOGEADO EN ESTA CASO USAMOS ID
-        $solicitud->UsuarioIngreso = auth()->user()->id;
+        //$solicitud->UsuarioIngreso = auth()->user()->id;
 
         //fecha actual
         $time = Carbon::now('America/El_Salvador');
@@ -169,7 +169,7 @@ class ApiSolicitudController extends Controller
         //guardamos
         $solicitud->save();
 
-
+        /*
         try {
             if ($solicitud->persona->Correo) {
 
@@ -231,7 +231,7 @@ class ApiSolicitudController extends Controller
                 Mail::to($recipientEmail)->send(new VerificacionMail($subject, $content, $file));
             }
         } catch (Exception $e) {
-        }
+        }*/
 
 
     }
