@@ -118,6 +118,28 @@ class ApiSolicitudController extends Controller
         $max_credito = Solicitud::max('NumeroCredito');
         $data = $request->json()->all();
 
+        $max_numero = Solicitud::max('Numero');
+        $max_credito = Solicitud::max('NumeroCredito');
+        $solicitud = new Solicitud();
+        $solicitud->Numero = $max_numero + 1;
+        $solicitud->Fecha = $data['Fecha'];
+        $solicitud->Solicitante = $data['Solicitante'];
+        $solicitud->Cantidad = $data['Cantidad'];
+        $solicitud->Monto = $data['Cantidad'];
+        $solicitud->Tipo = 1;
+        $solicitud->Tasa = 4;
+        $solicitud->Meses = $data['Meses'];
+        $solicitud->NumeroCredito = $max_credito + 1;
+        if ($data['Fiador'] != "") {
+            $solicitud->Fiador = $data['Fiador'];
+        } else {
+            $solicitud->Fiador = 1;
+        }
+        $solicitud->Estado = 2;
+        $time = Carbon::now('America/El_Salvador');
+        $solicitud->FechaIngreso =  $time->toDateTimeString();
+        $solicitud->save();
+
         return response()->json(['max_numero' => $max_numero, 'max_credito' => $data ]);
         /*$messages = [
 
@@ -141,10 +163,7 @@ class ApiSolicitudController extends Controller
 
         $max_numero = Solicitud::max('Numero');
         $max_credito = Solicitud::max('NumeroCredito');
-        //dd($max_credito);
-        //creamos un nuevo registro en la tabla banco, llamando el modelo banco.
         $solicitud = new Solicitud();
-        //asignando el valor del formulario al campo de la tabla
         $solicitud->Numero = $max_numero + 1;
         $solicitud->Fecha = $request->Fecha;
         $solicitud->Solicitante = $request->Solicitante;
@@ -160,14 +179,8 @@ class ApiSolicitudController extends Controller
             $solicitud->Fiador = 1;
         }
         $solicitud->Estado = 2;
-        //FUNCION PROPIA DE LARAVEL QUE TRAE TODOS LOS DATOS DEL USUARIO LOGEADO EN ESTA CASO USAMOS ID
-        //$solicitud->UsuarioIngreso = auth()->user()->id;
-
-        //fecha actual
         $time = Carbon::now('America/El_Salvador');
         $solicitud->FechaIngreso =  $time->toDateTimeString();
-
-        //guardamos
         $solicitud->save();
 
         /*
