@@ -116,8 +116,9 @@ class ApiSolicitudController extends Controller
 
         $max_numero = Solicitud::max('Numero');
         $max_credito = Solicitud::max('NumeroCredito');
+        $data = $request->json()->all();
 
-        return response()->json(['max_numero' => $max_numero, 'max_credito' => $request ]);
+        return response()->json(['max_numero' => $max_numero, 'max_credito' => $data ]);
         /*$messages = [
 
             'Fecha.required' => 'Fecha es un valor requerido',
