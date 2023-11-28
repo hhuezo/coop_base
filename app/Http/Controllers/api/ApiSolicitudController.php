@@ -3,21 +3,19 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Estado;
 use App\Models\Persona;
+use App\Models\Recibo;
 use App\Models\Solicitud;
 use App\Models\Tipo;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ApiSolicitudController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
         if ($request->get('search')) {
@@ -28,7 +26,7 @@ class ApiSolicitudController extends Controller
                 ->select(
                     'solicitud.id',
                     'solicitud.numero',
-                    'solicitud.fecha',
+                    DB::raw("DATE_FORMAT(solicitud.fecha, '%d/%m/%Y') as fecha"),
                     'solicitante.nombre',
                     'solicitante.numeroCuenta',
                     'banco.Nombre as banco',
@@ -40,6 +38,7 @@ class ApiSolicitudController extends Controller
                     'estado.Nombre as estado',
                     'estado.Id as id_estado'
                 )->where('solicitante.Nombre', 'like', '%' . $request->get('search') . '%')
+                ->where('estado.Id','<',3)
                 ->orWhere('solicitud.Numero', 'like', '%' . $request->get('search') . '%')
                 ->orderBy('solicitud.Numero', 'desc')
                 ->get();
@@ -51,7 +50,7 @@ class ApiSolicitudController extends Controller
                 ->select(
                     'solicitud.id',
                     'solicitud.numero',
-                    'solicitud.fecha',
+                    DB::raw("DATE_FORMAT(solicitud.fecha, '%d/%m/%Y') as fecha"),
                     'solicitante.nombre',
                     'solicitante.numeroCuenta as cuenta',
                     'banco.Nombre as banco',
@@ -63,6 +62,7 @@ class ApiSolicitudController extends Controller
                     'estado.Nombre as estado',
                     'estado.Id as id_estado'
                 )
+                ->where('estado.Id','<',3)
                 ->orderBy('solicitud.Numero', 'desc')
                 ->get();
         }
@@ -70,14 +70,9 @@ class ApiSolicitudController extends Controller
         return $solicitudes;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        $solicitantes = Persona::where('Activo', '=', 1)->get();
+        $solicitantes = Persona::where('Activo', '=', 1)->where('Id', '>', 1)->get();
         $fiadores = Persona::where('Activo', '=', 1)->where('Socio', '=', 1)->get();
         $tipos = Tipo::get();
 
@@ -89,7 +84,7 @@ class ApiSolicitudController extends Controller
 
     public function getFiador($id)
     {
-        try{
+        try {
             $solicitante = Persona::findOrFail($id);
 
             if ($solicitante) {
@@ -100,25 +95,165 @@ class ApiSolicitudController extends Controller
                     $response = Persona::select('Id', 'Nombre')->where('Activo', '=', 1)->where('Socio', '=', 1)->get();
                 }
             }
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             $response = Persona::select('Id', 'Nombre')->where('Id', '=', 1)->get();
         }
 
         return $response;
     }
 
+    public function getRecibos($id)
+    {
+        $solicitud = Solicitud::join('persona as solicitante', 'solicitud.Solicitante', '=', 'solicitante.Id')
+                ->join('banco', 'solicitante.Banco', '=', 'banco.Id')
+                ->join('tipo', 'solicitud.Tipo', '=', 'tipo.Id')
+                ->join('estado', 'solicitud.Estado', '=', 'estado.Id')
+                ->select(
+                    'solicitud.id',
+                    'solicitud.numero',
+                    DB::raw("DATE_FORMAT(solicitud.fecha, '%d/%m/%Y') as fecha"),
+                    'solicitante.nombre',
+                    'solicitante.numeroCuenta as cuenta',
+                    'banco.Nombre as banco',
+                    'solicitud.monto',
+                    'solicitud.cantidad',
+                    'tipo.Nombre as tipo',
+                    'solicitud.tasa',
+                    'solicitud.meses',
+                    'estado.Nombre as estado',
+                    'estado.Id as id_estado'
+                )
+                ->where('solicitud.Id','=',$id)
+                ->orderBy('solicitud.Numero', 'desc')
+                ->first();
+        try {
+
+            $recibos = Recibo::select(
+                DB::raw("DATE_FORMAT(Fecha, '%d/%m/%Y') as Fecha"),
+                'id',
+                'Numero',
+                'Pago',
+                'Interes',
+                'Capital',
+                DB::raw('Total as Saldo')
+            )
+            ->where('Solicitud','=',$id)
+            ->orderBy('Numero','desc')
+            ->get();
+            $response = ["val"=>1,"recibos"=>$recibos,"solicitud"=>$solicitud];
+        } catch (Exception $e) {
+            $response = ["val"=>0,"recibos"=>null,"solicitud"=>null];
+        }
+
+        return $response;
+    }
+    public function AddRecibo($id)
+    {
+        $solicitud = Solicitud::findOrFail($id);
+        $recibos = Recibo::where('Solicitud', '=', $id)->get();
+        $interes = 0;
+        $capital = 0;
+
+        $fecha_final = Carbon::now('America/El_Salvador');
+
+        if ($recibos->count() > 0) {
+            $last_recibo = Recibo::where('Solicitud', '=', $id)->orderBy('Id', 'desc')->first();
+
+            $fecha_inicio = Carbon::parse(substr($last_recibo->Fecha, 0, 8) . '01');
+            $fecha_final = Carbon::parse($fecha_final->format('Y-m-') . '01');
+            $meses = $fecha_inicio->diffInMonths($fecha_final);
+
+            if ($meses == 0 && $last_recibo->Capital > 0) {
+                $capital = $last_recibo->Total;
+                $interes = 0.00;
+            } else {
+
+
+                for ($i = 1; $i <= $meses; $i++) {
+                    if ($i == 1) {
+                        $capital = $last_recibo->Total;
+                        $interes = $capital * ($solicitud->Tasa / 100);
+                        if ($meses != 1) {
+                            $capital = $capital + $interes;
+                        }
+                    } else {
+                        $interes = $capital * ($solicitud->Tasa / 100);
+                        if ($i < $meses) {
+                            $capital = $capital + $interes;
+                        }
+                    }
+                    //echo $capital . '   ' . $interes . '<br>';
+                }
+            }
+
+            //return view('control.solicitud.edit', compact('capital', 'interes', 'personas', 'solicitud', 'recibos', 'interes'));
+        } else {
+            $fecha_inicio = Carbon::parse($solicitud->Fecha);
+            $now = Carbon::now('America/El_Salvador');
+            $fechafinal = Carbon::parse($now->format('Y-m-') . '03');
+            $meses = $fecha_inicio->diffInMonths($fechafinal);
+
+            $meses++;
+            $capital = $solicitud->Monto;
+            $capital_temporal = $solicitud->Monto;
+            for ($i = 1; $i <= $meses; $i++) {
+                if ($i == 1) {
+
+                    $interes = $capital_temporal * ($solicitud->Tasa / 100);
+                    if ($meses != 1) {
+                        $capital_temporal = $capital_temporal + $interes;
+                    }
+                } else {
+                    $interes = $capital_temporal * ($solicitud->Tasa / 100);
+                    if ($i < $meses) {
+                        $capital_temporal = $capital_temporal + $interes;
+                    }
+                }
+            }
+
+            $capital = $capital_temporal;
+        }
+
+        $response = ["monto"=>$capital,"interes"=>$interes,"solicitud"=>$solicitud->Numero,"solicitud_monto"=>$solicitud->Monto];
+
+        return $response;
+    }
 
     public function store(Request $request)
     {
-        $mensaje = "hola";
 
-        $max_numero = Solicitud::max('Numero');
-        $max_credito = Solicitud::max('NumeroCredito');
-        $data = $request->json()->all();
+        try {
+            $max_numero = Solicitud::max('Numero');
+            $max_credito = Solicitud::max('NumeroCredito');
+            $data = $request->json()->all();
 
-        return response()->json(['max_numero' => $max_numero, 'max_credito' => $data ]);
+            $max_numero = Solicitud::max('Numero');
+            $max_credito = Solicitud::max('NumeroCredito');
+            $solicitud = new Solicitud();
+            $solicitud->Numero = $max_numero + 1;
+            $solicitud->Fecha = $data['Fecha'];
+            $solicitud->Solicitante = $data['Solicitante'];
+            $solicitud->Cantidad = $data['Cantidad'];
+            $solicitud->Monto = $data['Cantidad'];
+            $solicitud->Tipo = 1;
+            $solicitud->Tasa = 4;
+            $solicitud->Meses = $data['Meses'];
+            $solicitud->NumeroCredito = $max_credito + 1;
+            if ($data['Fiador'] != "") {
+                $solicitud->Fiador = $data['Fiador'];
+            } else {
+                $solicitud->Fiador = 1;
+            }
+            $solicitud->Estado = 2;
+            $time = Carbon::now('America/El_Salvador');
+            $solicitud->FechaIngreso =  $time->toDateTimeString();
+            $solicitud->save();
+
+            return response()->json(['value' => "1", 'message' => "Registro ingresado correctamente"]);
+        } catch (Exception $e) {
+            return response()->json(['value' => "0", 'message' => "Error al  ingresar registro"]);
+        }
+
         /*$messages = [
 
             'Fecha.required' => 'Fecha es un valor requerido',
@@ -139,36 +274,7 @@ class ApiSolicitudController extends Controller
 
         ], $messages);*/
 
-        $max_numero = Solicitud::max('Numero');
-        $max_credito = Solicitud::max('NumeroCredito');
-        //dd($max_credito);
-        //creamos un nuevo registro en la tabla banco, llamando el modelo banco.
-        $solicitud = new Solicitud();
-        //asignando el valor del formulario al campo de la tabla
-        $solicitud->Numero = $max_numero + 1;
-        $solicitud->Fecha = $request->Fecha;
-        $solicitud->Solicitante = $request->Solicitante;
-        $solicitud->Cantidad = $request->Cantidad;
-        $solicitud->Monto = $request->Cantidad;
-        $solicitud->Tipo = 1;
-        $solicitud->Tasa = 4;
-        $solicitud->Meses = $request->Meses;
-        $solicitud->NumeroCredito = $max_credito + 1;
-        if ($request->Fiador != "") {
-            $solicitud->Fiador = $request->Fiador;
-        } else {
-            $solicitud->Fiador = 1;
-        }
-        $solicitud->Estado = 2;
-        //FUNCION PROPIA DE LARAVEL QUE TRAE TODOS LOS DATOS DEL USUARIO LOGEADO EN ESTA CASO USAMOS ID
-        //$solicitud->UsuarioIngreso = auth()->user()->id;
 
-        //fecha actual
-        $time = Carbon::now('America/El_Salvador');
-        $solicitud->FechaIngreso =  $time->toDateTimeString();
-
-        //guardamos
-        $solicitud->save();
 
         /*
         try {
@@ -233,29 +339,23 @@ class ApiSolicitudController extends Controller
             }
         } catch (Exception $e) {
         }*/
-
-
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        //
+        $solicitud = Solicitud::findOrFail($id);
+        $solicitantes = Persona::where('Activo', '=', 1)->where('Id', '>', 1)->get();
+        $fiadores = Persona::where('Activo', '=', 1)->where('Socio', '=', 1)->get();
+        $tipos = Tipo::get();
+        $recibos = Recibo::where('Solicitud', '=', $id)->get();
+
+        $response = ["solicitud" => $solicitud, "solicitantes" => $solicitantes, "fiadores" => $fiadores, "tipos" => $tipos, "recibos" => $recibos];
+
+        return $response;
     }
 
     /**
@@ -267,7 +367,19 @@ class ApiSolicitudController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $solicitud = Solicitud::findOrFail($id);
+            $solicitud->Fecha = $request->Fecha;
+            $solicitud->Solicitante = $request->Solicitante;
+            $solicitud->Monto = $request->Monto;
+            $solicitud->Meses = $request->Meses;
+            $solicitud->Tipo = $request->Tipo;
+            $solicitud->update();
+
+            return response()->json(['value' => "1", 'message' => "Registro ingresado correctamente"]);
+        } catch (Exception $e) {
+            return response()->json(['value' => "0", 'message' => "Error al  ingresar registro"]);
+        }
     }
 
     /**
