@@ -21,6 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 */
 Route::get('api-solicitud/getFiador/{id}', [ApiSolicitudController::class, 'getFiador']);
+Route::get('api-solicitud/getRecibos/{id}', [ApiSolicitudController::class, 'getRecibos']);
+Route::get('api-solicitud/AddRecibo/{id}', [ApiSolicitudController::class, 'AddRecibo']);
 Route::resource('api-solicitud', ApiSolicitudController::class);
 
 
