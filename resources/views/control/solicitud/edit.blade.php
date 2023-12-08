@@ -79,7 +79,7 @@
                             <label class="control-label col-md-3 col-sm-12 col-xs-12">Cantidad</label>
                             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <input type="text" name="Cantidad" class="form-control" autofocus="true"
-                                    value="{{ $solicitud->Cantidad }}">
+                                    value="{{ $solicitud->Monto }}">
                             </div>
                         </div>
 
@@ -268,7 +268,7 @@
             $(document).ready(function() {
                 $("#Fecha").change(function() {
 
-                    // var para la Departamento                            
+                    // var para la Departamento
                     var Fecha = $(this).val();
                     var Solicitud = document.getElementById('Solicitud').value;
                     $.get("{{ url('control/solicitud/calculo_recibo') }}" + '/' + Solicitud + '/' + Fecha,
