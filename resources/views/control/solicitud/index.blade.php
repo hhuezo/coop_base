@@ -49,7 +49,7 @@
                                         <td></td>
                                     @endif
 
-                                    <td>$ {{ $obj->Cantidad }}</td>
+                                    <td>$ {{ $obj->Monto }}</td>
                                     <td> {{ $obj->Tasa }}</td>
                                     <td>{{ $obj->Meses }}</td>
                                     <td>{{ $obj->estado->Nombre }}</td>
