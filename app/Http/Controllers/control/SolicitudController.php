@@ -343,13 +343,11 @@ class SolicitudController extends Controller
                     if ($meses != 1) {
                         $capital_temporal = $capital_temporal + $interes;
                     }
-
                 } else {
                     $interes = $capital_temporal * ($solicitud->Tasa / 100);
                     if ($i < $meses) {
                         $capital_temporal = $capital_temporal + $interes;
                     }
-
                 }
                 //echo $capital_temporal . '   ' . $interes . '<br>';
             }
@@ -363,12 +361,81 @@ class SolicitudController extends Controller
         return $response;
     }
 
+    public function calculo($fecha_inicio, $fecha_final)
+    {
+        $inicio = explode('-', $fecha_inicio);
+        $final = explode('-', $fecha_final);
+
+        $mesesCompletos = ($final[0] - $inicio[0]) * 12 + ($final[1] - $inicio[1]);
+
+        // Ajustar si el día de la fecha de inicio es posterior al día de la fecha final
+        if ($inicio[2] > $final[2]) {
+            $mesesCompletos += 1;
+        }
+
+        return $mesesCompletos;
+    }
+
+
+    public function calcularDeuda($capital, $interesMensual, $numMeses)
+    {
+        $deudaTotal = 0;
+
+        for ($mes = 1; $mes <= $numMeses; $mes++) {
+            $interes = $capital * $interesMensual;
+            $capital += $interes;
+            $deudaTotal = $capital;  // Actualizamos la deuda total con el nuevo capital, no sumamos al acumulado
+        }
+
+        // Redondear a dos decimales sin convertir a cadena
+        $deudaTotal = round($deudaTotal, 2);
+
+        return $deudaTotal;
+    }
 
 
     public function edit($id)
     {
         $solicitud = Solicitud::findOrFail($id);
         $personas = Persona::get();
+        $fecha_final = Carbon::now('America/El_Salvador');
+        $recibos = Recibo::where('Solicitud', '=', $id)->get();
+
+        $fecha_inicio = $solicitud->Fecha;
+        $capital = $solicitud->Monto;
+        $interesMensual = ($solicitud->Tasa / 100);
+
+        if ($recibos->count() > 0) {
+            $last_recibo = Recibo::where('Solicitud', '=', $id)->orderBy('Id', 'desc')->first();
+            $fecha_inicio = $last_recibo->Fecha;
+            $capital = $last_recibo->Total;
+        }
+
+
+        $numMeses = $this->calculo($fecha_inicio, $fecha_final->format('Y-m-d'));
+
+        if ($recibos->count() == 0) {
+            $numMeses--;
+        }
+
+
+        if($recibos->count() > 0 && $fecha_inicio->format('Y-m') == $fecha_final->format('Y-m')){
+            $interes = 0;
+        }
+        else{
+            $deuda = $this->calcularDeuda($capital, $interesMensual, $numMeses);
+
+            $interes = round(($deuda - $capital),2);
+        }
+
+
+
+
+        //dd($deuda, $capital,  $interes);
+        return view('control.solicitud.edit', compact('capital', 'interes', 'personas', 'solicitud', 'recibos'));
+
+
+        /*$personas = Persona::get();
         $recibos = Recibo::where('Solicitud', '=', $id)->get();
         $interes = 0;
         $capital = 0;
@@ -441,11 +508,11 @@ class SolicitudController extends Controller
             // dd($capital, $interes, $solicitud->Fecha);
         }
 
-        $capital = round($capital_temporal , 2);
+        $capital = round($capital_temporal, 2);
         $interes = round($interes, 2);
 
 
-        return view('control.solicitud.edit', compact('capital', 'interes', 'personas', 'solicitud', 'recibos', 'interes'));
+        return view('control.solicitud.edit', compact('capital', 'interes', 'personas', 'solicitud', 'recibos', 'interes'));*/
     }
 
 
