@@ -325,29 +325,38 @@ class SolicitudController extends Controller
             $response = ["Capital" => $capital, "Interes" => $interes];
         } else {
             $fecha_inicio = Carbon::parse($solicitud->Fecha);
-            $fecha = Carbon::parse($fecha);
-            $fecha_final = Carbon::parse($fecha->format('Y-m-') . '03');
-            $meses = $fecha_inicio->diffInMonths($fecha_final);
+
+            $now = Carbon::now('America/El_Salvador');
+            $fechafinal = Carbon::parse($fecha);
+            $meses = $fecha_inicio->diffInMonths($fechafinal);
+
 
             $meses++;
 
-            // echo '$meses'.$meses.'<br>';
+            $capital = $solicitud->Monto;
+
+            $capital_temporal = $solicitud->Monto;
             for ($i = 1; $i <= $meses; $i++) {
                 if ($i == 1) {
-                    $capital = $solicitud->Monto;
-                    $interes = $capital * ($solicitud->Tasa / 100);
+
+                    $interes = $capital_temporal * ($solicitud->Tasa / 100);
                     if ($meses != 1) {
-                        $capital = $capital + $interes;
+                        $capital_temporal = $capital_temporal + $interes;
                     }
+
                 } else {
-                    $interes = $capital * ($solicitud->Tasa / 100);
+                    $interes = $capital_temporal * ($solicitud->Tasa / 100);
                     if ($i < $meses) {
-                        $capital = $capital + $interes;
+                        $capital_temporal = $capital_temporal + $interes;
                     }
+
                 }
-                //echo $capital . '   ' . $interes . '<br>';
+                //echo $capital_temporal . '   ' . $interes . '<br>';
             }
-            $response = ["Capital" => $solicitud->Monto, "Interes" => $interes];
+
+            //$capital = round($capital_temporal , 2);
+
+            $response = ["Capital" => $capital_temporal, "Interes" => $interes];
         }
 
 
@@ -396,6 +405,10 @@ class SolicitudController extends Controller
                 }
             }
 
+            $capital = round($capital, 2);
+            $interes = round($interes, 2);
+            //$capital = round($capital, 2);
+
             return view('control.solicitud.edit', compact('capital', 'interes', 'personas', 'solicitud', 'recibos', 'interes'));
         } else {
             $fecha_inicio = Carbon::parse($solicitud->Fecha);
@@ -403,8 +416,10 @@ class SolicitudController extends Controller
             $fechafinal = Carbon::parse($now->format('Y-m-') . '03');
             $meses = $fecha_inicio->diffInMonths($fecha_final);
 
+
             $meses++;
             $capital = $solicitud->Monto;
+
             $capital_temporal = $solicitud->Monto;
             for ($i = 1; $i <= $meses; $i++) {
                 if ($i == 1) {
@@ -414,16 +429,20 @@ class SolicitudController extends Controller
                         $capital_temporal = $capital_temporal + $interes;
                     }
                 } else {
-                    $interes = $capital_temporal * ($solicitud->Tasa / 100);
-                    if ($i < $meses) {
+
+                    if ($i <= $meses) {
                         $capital_temporal = $capital_temporal + $interes;
                     }
+                    $interes = $capital_temporal * ($solicitud->Tasa / 100);
                 }
-                //echo $capital . '   ' . $interes . '<br>';
+                //echo $capital_temporal . '   ' . $interes . '<br>';
             }
 
             // dd($capital, $interes, $solicitud->Fecha);
         }
+
+        $capital = round($capital_temporal , 2);
+        $interes = round($interes, 2);
 
 
         return view('control.solicitud.edit', compact('capital', 'interes', 'personas', 'solicitud', 'recibos', 'interes'));
