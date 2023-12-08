@@ -366,6 +366,11 @@ class SolicitudController extends Controller
         $inicio = explode('-', $fecha_inicio);
         $final = explode('-', $fecha_final);
 
+        // Verificar si el mes y el año son iguales
+        if ($inicio[0] == $final[0] && $inicio[1] == $final[1]) {
+            return 1;
+        }
+
         $mesesCompletos = ($final[0] - $inicio[0]) * 12 + ($final[1] - $inicio[1]);
 
         // Ajustar si el día de la fecha de inicio es posterior al día de la fecha final
@@ -405,6 +410,7 @@ class SolicitudController extends Controller
         $capital = $solicitud->Monto;
         $interesMensual = ($solicitud->Tasa / 100);
 
+
         if ($recibos->count() > 0) {
             $last_recibo = Recibo::where('Solicitud', '=', $id)->orderBy('Id', 'desc')->first();
             $fecha_inicio = $last_recibo->Fecha;
@@ -414,19 +420,37 @@ class SolicitudController extends Controller
 
         $numMeses = $this->calculo($fecha_inicio, $fecha_final->format('Y-m-d'));
 
-        if ($recibos->count() == 0) {
+        $deuda = $this->calcularDeuda($capital, $interesMensual, $numMeses);
+        $interes = round(($deuda - $capital), 2);
+
+
+        //para validar si hay recibo del ismo mes donde se halla cobrado interes
+        if($numMeses == 1 && $recibos->count() > 0 )
+        {
+            if($last_recibo->Interes > 0)
+            {
+                $interes = 0;
+            }
+        }
+
+
+
+
+
+        /* if ($recibos->count() == 0) {
             $numMeses--;
         }
+
 
 
         if($recibos->count() > 0 && $fecha_inicio->format('Y-m') == $fecha_final->format('Y-m')){
             $interes = 0;
         }
         else{
-            $deuda = $this->calcularDeuda($capital, $interesMensual, $numMeses);
 
-            $interes = round(($deuda - $capital),2);
-        }
+
+
+        }*/
 
 
 
