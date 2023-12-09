@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Solicitud;
 use App\Models\TempIngresos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -148,5 +149,47 @@ class ReportesController extends Controller
             ->get();
 
         return view('reportes.ingresos_aceptar', compact('FechaInicio', 'FechaFinal', 'result_inicial', 'results'));
+    }
+
+    public function saldos()
+    {
+        return view('reportes.saldos');
+    }
+
+
+    public function saldos_generar(Request $request)
+    {
+        $fecha = $request->Fecha;
+        $solicitudes  = Solicitud::
+            select('solicitud.Id', 'solicitud.Numero', DB::raw("DATE_FORMAT(solicitud.Fecha, '%d/%m/%Y') as Fecha"), 'p.Nombre', 'solicitud.Monto')
+            ->selectSub(function ($query) {
+                $query->select('r.Id')
+                    ->from('recibo as r')
+                    ->whereColumn('r.Solicitud', 'solicitud.Id')
+                    ->orderByDesc('r.Numero')
+                    ->limit(1);
+            }, 'id_recibo')
+            ->selectSub(function ($query) {
+                $query->select(DB::raw("DATE_FORMAT(r.Fecha, '%d/%m/%Y')"))
+                    ->from('recibo as r')
+                    ->whereColumn('r.Solicitud', 'solicitud.Id')
+                    ->orderByDesc('r.Numero')
+                    ->limit(1);
+            }, 'fecha_recibo')
+            ->selectSub(function ($query) {
+                $query->select('r.Total')
+                    ->from('recibo as r')
+                    ->whereColumn('r.Solicitud', 'solicitud.Id')
+                    ->orderByDesc('r.Numero')
+                    ->limit(1);
+            }, 'saldo')
+            ->join('persona as p', 'solicitud.Solicitante', '=', 'p.Id')
+            ->where('solicitud.Estado', '=', 2)
+            ->where('solicitud.Fecha', '>', '2022-01-01')
+            ->orderBy('solicitud.Fecha')
+            ->get();
+
+
+        return view('reportes.saldos_generar', compact('solicitudes','fecha'));
     }
 }
