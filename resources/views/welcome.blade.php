@@ -94,7 +94,7 @@
                                     <ul class="nav child_menu">
 
                                         <li><a href="{{ url('reportes/ingresos') }}">Egresos e ingresos</a></li>
-
+                                        <li><a href="{{ url('reportes/saldos') }}">Saldos</a></li>
                                     </ul>
                                 </li>
 

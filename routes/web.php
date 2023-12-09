@@ -66,3 +66,6 @@ Route::get('persona/get_dui/{id}', [PersonaController::class, 'get_dui']);
 
 Route::get('reportes/ingresos', [ReportesController::class, 'ingresos']);
 Route::post('reportes/ingresos', [ReportesController::class, 'ingresos_generar']);
+
+Route::get('reportes/saldos', [ReportesController::class, 'saldos']);
+Route::post('reportes/saldos', [ReportesController::class, 'saldos_generar']);
