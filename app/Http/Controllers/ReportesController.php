@@ -185,7 +185,7 @@ class ReportesController extends Controller
             }, 'saldo')
             ->join('persona as p', 'solicitud.Solicitante', '=', 'p.Id')
             ->where('solicitud.Estado', '=', 2)
-            ->where('solicitud.Fecha', '>', '2022-01-01')
+           // ->where('solicitud.Fecha', '>', '2022-01-01')
             ->orderBy('solicitud.Fecha')
             ->get();
 
