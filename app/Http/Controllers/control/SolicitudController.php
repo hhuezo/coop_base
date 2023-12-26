@@ -397,6 +397,7 @@ class SolicitudController extends Controller
     {
         $inicio = Carbon::parse($fecha_inicio);
         $final = Carbon::parse($fecha_final);
+        $fecha_evaluar_inicio = Carbon::parse($fecha_inicio);
 
         // Verificar si el año y el mes son iguales
         if ($inicio->format('Y-m') == $final->format('Y-m')) {
@@ -410,8 +411,10 @@ class SolicitudController extends Controller
         // Calcular el número de meses afectados
         $mesesAfectados = $final->diffInMonths($inicio);
 
-        // Asegurarse de contar el mes inicial
-        $mesesAfectados += 1;
+        if ($fecha_evaluar_inicio->day < 22) {
+            // Asegurarse de contar el mes inicial
+            $mesesAfectados += 1;
+        }
 
         return $mesesAfectados;
     }
@@ -484,107 +487,9 @@ class SolicitudController extends Controller
 
 
 
-
-        /* if ($recibos->count() == 0) {
-            $numMeses--;
-        }
-
-
-
-        if($recibos->count() > 0 && $fecha_inicio->format('Y-m') == $fecha_final->format('Y-m')){
-            $interes = 0;
-        }
-        else{
-
-
-
-        }*/
-
-
-
-
         //dd($deuda, $capital,  $interes);
         return view('control.solicitud.edit', compact('capital', 'interes', 'personas', 'solicitud', 'recibos'));
 
-
-        /*$personas = Persona::get();
-        $recibos = Recibo::where('Solicitud', '=', $id)->get();
-        $interes = 0;
-        $capital = 0;
-
-        $fecha_final = Carbon::now('America/El_Salvador');
-
-        if ($recibos->count() > 0) {
-            $last_recibo = Recibo::where('Solicitud', '=', $id)->orderBy('Id', 'desc')->first();
-
-            $fecha_inicio = Carbon::parse(substr($last_recibo->Fecha, 0, 8) . '01');
-            $fecha_final = Carbon::parse($fecha_final->format('Y-m-') . '01');
-            $meses = $fecha_inicio->diffInMonths($fecha_final);
-
-            if ($meses == 0 && $last_recibo->Capital > 0) {
-                $capital = $last_recibo->Total;
-                $interes = 0.00;
-            } else {
-
-
-                for ($i = 1; $i <= $meses; $i++) {
-                    if ($i == 1) {
-                        $capital = $last_recibo->Total;
-                        $interes = $capital * ($solicitud->Tasa / 100);
-                        if ($meses != 1) {
-                            $capital = $capital + $interes;
-                        }
-                    } else {
-                        $interes = $capital * ($solicitud->Tasa / 100);
-                        if ($i < $meses) {
-                            $capital = $capital + $interes;
-                        }
-                    }
-                    //echo $capital . '   ' . $interes . '<br>';
-                }
-            }
-
-            $capital = round($capital, 2);
-            $interes = round($interes, 2);
-            //$capital = round($capital, 2);
-
-            return view('control.solicitud.edit', compact('capital', 'interes', 'personas', 'solicitud', 'recibos', 'interes'));
-        } else {
-            $fecha_inicio = Carbon::parse($solicitud->Fecha);
-            $now = Carbon::now('America/El_Salvador');
-            $fechafinal = Carbon::parse($now->format('Y-m-') . '03');
-            $meses = $fecha_inicio->diffInMonths($fecha_final);
-
-
-            $meses++;
-            $capital = $solicitud->Monto;
-
-            $capital_temporal = $solicitud->Monto;
-            for ($i = 1; $i <= $meses; $i++) {
-                if ($i == 1) {
-
-                    $interes = $capital_temporal * ($solicitud->Tasa / 100);
-                    if ($meses != 1) {
-                        $capital_temporal = $capital_temporal + $interes;
-                    }
-                } else {
-
-                    if ($i <= $meses) {
-                        $capital_temporal = $capital_temporal + $interes;
-                    }
-                    $interes = $capital_temporal * ($solicitud->Tasa / 100);
-                }
-                //echo $capital_temporal . '   ' . $interes . '<br>';
-            }
-
-            // dd($capital, $interes, $solicitud->Fecha);
-        }
-
-        $capital = round($capital_temporal, 2);
-        $interes = round($interes, 2);
-
-
-        return view('control.solicitud.edit', compact('capital', 'interes', 'personas', 'solicitud', 'recibos', 'interes'));*/
     }
 
 
