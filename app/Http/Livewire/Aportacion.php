@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Mail\AportacionMail;
 use App\Models\Aportacion as ModelsAportacion;
+use App\Models\Persona;
 use Livewire\Component;
 use Carbon\Carbon;
 use Exception;
@@ -50,9 +51,20 @@ class Aportacion extends Component
     public function modal_aportacion($id)
     {
         $aportacion = ModelsAportacion::where('Socio', '=', $id)->where('Axo', '=', $this->axo)->orderBy('Mes', 'desc')->first();
-        $this->mes = $aportacion->Mes + 1;
-        $this->socio = $aportacion->Socio;
+        if($aportacion )
+        {
+            $this->mes = $aportacion->Mes + 1;
+            $this->socio = $aportacion->Socio;
         $this->socio_nombre = $aportacion->socio->Nombre;
+        }
+        else{
+            $this->mes = 1;
+            $socio = Persona::findOrFail($id);
+            $this->socio = $id;
+            $this->socio_nombre = $socio->Nombre;
+        }
+
+
     }
 
     public function save()
