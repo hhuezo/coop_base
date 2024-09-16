@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\ApiPersonaController;
 use App\Http\Controllers\api\ApiSolicitudController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,5 +25,6 @@ Route::get('api-solicitud/getFiador/{id}', [ApiSolicitudController::class, 'getF
 Route::get('api-solicitud/getRecibos/{id}', [ApiSolicitudController::class, 'getRecibos']);
 Route::get('api-solicitud/AddRecibo/{id}', [ApiSolicitudController::class, 'AddRecibo']);
 Route::resource('api-solicitud', ApiSolicitudController::class);
+Route::resource('api-persona', ApiPersonaController::class);
 
 
