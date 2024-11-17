@@ -70,7 +70,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-12 col-xs-12">Cantidad</label>
                                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                    <input type="number" name="Cantidad" class="form-control" autofocus="true"
+                                    <input type="number" name="Cantidad" step="0.01" class="form-control" autofocus="true"
                                         value="{{ $egresos->Cantidad }}">
                                 </div>
                             </div>

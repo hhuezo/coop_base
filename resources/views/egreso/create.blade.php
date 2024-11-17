@@ -72,7 +72,7 @@
                             <label class="col-sm-3 control-label">Cantidad</label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 {{-- name es el nombre relacionado al nombre del campo --}}
-                                <input type="number" name="Cantidad" class="form-control" autofocus="true" required="true"
+                                <input type="number" name="Cantidad" step="0.01" class="form-control" autofocus="true" required="true"
                                     onblur="this.value = this.value.toUpperCase()">
                             </div>
                             <label class="col-sm-3 control-label">&nbsp;</label>

@@ -192,4 +192,17 @@ class ReportesController extends Controller
 
         return view('reportes.saldos_generar', compact('solicitudes','fecha'));
     }
+
+    public function rubros()
+    {
+        return view('reportes.rubros');
+    }
+
+    public function rubros_generar()
+    {
+        return view('reportes.rubros_aceptar');
+    }
+
+
+    
 }

@@ -95,6 +95,7 @@
 
                                         <li><a href="{{ url('reportes/ingresos') }}">Egresos e ingresos</a></li>
                                         <li><a href="{{ url('reportes/saldos') }}">Saldos</a></li>
+                                         <li><a href="{{ url('reportes/rubros') }}">Rubros</a></li>
                                     </ul>
                                 </li>
 

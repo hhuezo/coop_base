@@ -69,3 +69,6 @@ Route::post('reportes/ingresos', [ReportesController::class, 'ingresos_generar']
 
 Route::get('reportes/saldos', [ReportesController::class, 'saldos']);
 Route::post('reportes/saldos', [ReportesController::class, 'saldos_generar']);
+
+Route::get('reportes/rubros', [ReportesController::class, 'rubros']);
+Route::get('reportes/rubros_generar', [ReportesController::class, 'rubros_generar']);
