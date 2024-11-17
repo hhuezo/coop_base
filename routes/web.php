@@ -7,6 +7,7 @@ use App\Http\Controllers\control\SolicitudController;
 use App\Http\Controllers\EgresoController;
 use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\ReciboController;
 use App\Http\Controllers\ReportesController;
@@ -69,3 +70,5 @@ Route::post('reportes/ingresos', [ReportesController::class, 'ingresos_generar']
 
 Route::get('reportes/saldos', [ReportesController::class, 'saldos']);
 Route::post('reportes/saldos', [ReportesController::class, 'saldos_generar']);
+
+Route::post('mail', [MailController::class, 'sendMail']);
