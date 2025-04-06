@@ -1,6 +1,6 @@
 @extends ('welcome')
 @section('contenido')
-
+@include('sweetalert::alert', ['cdn' => 'https://cdn.jsdelivr.net/npm/sweetalert2@9'])
     <div class="x_panel">
         <div class="clearfix"></div>
 
@@ -59,6 +59,13 @@
                                         <a href="{{ url('control/solicitud') }}/{{ $obj->Id }}/edit"
                                             class="on-default edit-row">
                                             <i class="fa fa-pencil fa-lg"></i></a>
+                                        &nbsp;
+                                        @if ($obj->Estado == 1)
+                                            <a href="" data-target="#modal-delete-{{ $obj->Id }}"
+                                                data-toggle="modal" class="on-default edit-row">
+                                                <i class="fa fa-check fa-lg"></i></a>
+                                        @endif
+
 
                                     </td>
                                 </tr>

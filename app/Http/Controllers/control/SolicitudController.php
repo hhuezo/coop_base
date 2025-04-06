@@ -95,7 +95,11 @@ class SolicitudController extends Controller
         $pdf = \PDF::loadView(
             'reportes.solicitud',
             [
-                "solicitud" => $solicitud, "meses" => $meses, "tabla_amortizacion" => $tabla_amortizacion, "mes" => $mes, "cuotaMensual" => $cuotaMensual,
+                "solicitud" => $solicitud,
+                "meses" => $meses,
+                "tabla_amortizacion" => $tabla_amortizacion,
+                "mes" => $mes,
+                "cuotaMensual" => $cuotaMensual,
                 "solicitud" => $solicitud
             ]
         );
@@ -192,7 +196,7 @@ class SolicitudController extends Controller
         } else {
             $solicitud->Fiador = 1;
         }
-        $solicitud->Estado = 2;
+        $solicitud->Estado = 1;
         //FUNCION PROPIA DE LARAVEL QUE TRAE TODOS LOS DATOS DEL USUARIO LOGEADO EN ESTA CASO USAMOS ID
         $solicitud->UsuarioIngreso = auth()->user()->id;
 
@@ -243,7 +247,10 @@ class SolicitudController extends Controller
                 $pdf = \PDF::loadView(
                     'reportes.solicitud',
                     [
-                        "solicitud" => $solicitud, "tabla_amortizacion" => $tabla_amortizacion, "mes" => $mes, "cuotaMensual" => $cuotaMensual,
+                        "solicitud" => $solicitud,
+                        "tabla_amortizacion" => $tabla_amortizacion,
+                        "mes" => $mes,
+                        "cuotaMensual" => $cuotaMensual,
                         "solicitud" => $solicitud
                     ]
                 );
@@ -489,7 +496,6 @@ class SolicitudController extends Controller
 
         //dd($deuda, $capital,  $interes);
         return view('control.solicitud.edit', compact('capital', 'interes', 'personas', 'solicitud', 'recibos'));
-
     }
 
 
@@ -629,12 +635,20 @@ class SolicitudController extends Controller
 
 
 
-    public function update(Request $request, $id)
-    {
-    }
+    public function update(Request $request, $id) {}
 
     public function destroy($id)
     {
-        //
+        try {
+            $solicitud = Solicitud::findOrFail($id);
+            $solicitud->estado = 2;
+            $solicitud->save();
+
+            alert()->success('Éxito', 'La solicitud ha sido aprobada correctamente.');
+        } catch (\Exception $e) {
+            alert()->error('Error', 'Ocurrió un problema al aprobar la solicitud: ' . $e->getMessage());
+        }
+
+        return back();
     }
 }
