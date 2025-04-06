@@ -7,6 +7,7 @@ use App\Http\Controllers\control\SolicitudController;
 use App\Http\Controllers\EgresoController;
 use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\ReciboController;
 use App\Http\Controllers\ReportesController;
@@ -14,7 +15,6 @@ use App\Http\Controllers\RubroController;
 use App\Http\Controllers\SolicitudCatalogoController;
 use App\Http\Controllers\TipoController;
 use App\Http\Controllers\UsuarioController;
-use App\Http\Controllers\MailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,4 +77,5 @@ Route::get('reportes/rubros_generar', [ReportesController::class, 'rubros_genera
 
 
 Route::get('mail', [MailController::class, 'mail']);
+Route::post('mail', [MailController::class, 'sendMail']);
 Route::post('mail', [MailController::class, 'sendMail']);
