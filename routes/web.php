@@ -14,6 +14,7 @@ use App\Http\Controllers\RubroController;
 use App\Http\Controllers\SolicitudCatalogoController;
 use App\Http\Controllers\TipoController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\MailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,7 @@ Route::resource('egreso', EgresoController::class);
 Route::resource('catalogo/solicitudes', SolicitudCatalogoController::class);
 Route::resource('recibo', ReciboController::class);
 
+
 Route::get('control/solicitud/calculo_recibo/{id}/{fecha}', [SolicitudController::class, 'calculo_recibo']);
 Route::post('control/solicitud/recibo', [SolicitudController::class, 'recibo_nuevo']);
 Route::post('control/solicitud/create_persona', [SolicitudController::class, 'create_persona']);
@@ -72,3 +74,7 @@ Route::post('reportes/saldos', [ReportesController::class, 'saldos_generar']);
 
 Route::get('reportes/rubros', [ReportesController::class, 'rubros']);
 Route::get('reportes/rubros_generar', [ReportesController::class, 'rubros_generar']);
+
+
+Route::get('mail', [MailController::class, 'mail']);
+Route::post('mail', [MailController::class, 'sendMail']);
