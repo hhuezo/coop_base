@@ -60,7 +60,7 @@
                                             class="on-default edit-row">
                                             <i class="fa fa-pencil fa-lg"></i></a>
                                         &nbsp;
-                                        @if ($obj->Estado == 1)
+                                        @if ($obj->Estado == 1 && $user->rol_id == 1)
                                             <a href="" data-target="#modal-delete-{{ $obj->Id }}"
                                                 data-toggle="modal" class="on-default edit-row">
                                                 <i class="fa fa-check fa-lg"></i></a>

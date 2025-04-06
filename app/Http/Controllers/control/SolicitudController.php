@@ -11,6 +11,7 @@ use App\Models\Persona;
 use App\Models\Recibo;
 use App\Models\Solicitud;
 use App\Models\Tipo;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -23,7 +24,8 @@ class SolicitudController extends Controller
     public function index()
     {
         $solicitudes = Solicitud::get();
-        return view('control.solicitud.index', compact('solicitudes'));
+        $user = User::find(auth()->user()->id);
+        return view('control.solicitud.index', compact('solicitudes','user'));
     }
 
     public function create_persona(Request $request)
